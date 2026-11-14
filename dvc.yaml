@@ -1,0 +1,34 @@
+stages:
+  ingest:
+    cmd: python src/ingest.py
+    deps:
+      - src/ingest.py
+    params:
+      - data.num_samples
+      - data.random_state
+    outs:
+      - data/raw/vehicles_raw.csv
+
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - src/preprocess.py
+      - data/raw/vehicles_raw.csv
+    outs:
+      - data/processed/vehicles_processed.csv
+
+  train:
+    cmd: python src/train_evaluate.py
+    deps:
+      - src/train_evaluate.py
+      - data/processed/vehicles_processed.csv
+    params:
+      - data.test_size
+      - data.random_state
+      - model.n_estimators
+      - model.max_depth
+      - model.min_samples_split
+      - model.registry_model_name
+    metrics:
+      - metrics.json:
+          cache: false

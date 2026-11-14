@@ -1,0 +1,10 @@
+data:
+  test_size: 0.2
+  random_state: 42
+  num_samples: 1500
+
+model:
+  n_estimators: 150
+  max_depth: 12
+  min_samples_split: 4
+  registry_model_name: "VehiclePriceEstimator"

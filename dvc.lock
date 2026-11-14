@@ -1,0 +1,34 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python src/ingest.py
+    deps:
+    - path: src/ingest.py
+      hash: md5
+      md5: 7aec0231d3a9e62046aa4ca7611b890d
+      size: 2289
+    params:
+      params.yaml:
+        data.num_samples: 1500
+        data.random_state: 42
+    outs:
+    - path: data/raw/vehicles_raw.csv
+      hash: md5
+      md5: ef3acec6477ea369d805d4650eb4fb8d
+      size: 81123
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/raw/vehicles_raw.csv
+      hash: md5
+      md5: ef3acec6477ea369d805d4650eb4fb8d
+      size: 81123
+    - path: src/preprocess.py
+      hash: md5
+      md5: b33b2e5482de6b0f397f310131eceb93
+      size: 967
+    outs:
+    - path: data/processed/vehicles_processed.csv
+      hash: md5
+      md5: 63dff8a41112545d7d930b56eb1644b7
+      size: 85690
