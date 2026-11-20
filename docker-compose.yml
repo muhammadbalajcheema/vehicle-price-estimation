@@ -1,0 +1,34 @@
+services:
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: vehicle-mlflow-registry
+    working_dir: /mlflow
+    volumes:
+      - mlflow_data:/mlflow
+    ports:
+      - "5000:5000"
+    command: >
+      bash -c "pip install --no-cache-dir mlflow==2.17.2 &&
+               mlflow server --host 0.0.0.0 --port 5000
+               --backend-store-uri sqlite:///mlflow.db
+               --default-artifact-root /mlflow/mlruns"
+
+  inference-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vehicle-price-api
+    depends_on:
+      - mlflow-server
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+      - MODEL_NAME=VehiclePriceEstimator
+      - MODEL_VERSION=1
+    volumes:
+      - mlflow_data:/app/mlflow_store
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  mlflow_data:
